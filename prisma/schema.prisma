@@ -1,0 +1,40 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+generator kysely {
+  provider = "prisma-kysely"
+
+  // Optionally provide a destination directory for the generated file
+  // and a filename of your choice
+  output       = "../src/db"
+  fileName     = "types.ts"
+  // Optionally generate runtime enums to a separate file
+  enumFileName = "enums.ts"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Player {
+  id      Int    @id @default(autoincrement())
+  steamId String @unique
+
+  steamAvatarIcon   String?
+  steamAvatarMedium String?
+  steamAvatarFull   String?
+  steamName         String?
+
+  rankSamples           Int[]
+  rankSamplesTimestamps DateTime[]
+  eloSamples            Int[]
+  eloSamplesTimestamps  DateTime[]
+}
