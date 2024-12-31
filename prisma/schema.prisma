@@ -13,7 +13,7 @@ generator kysely {
 
   // Optionally provide a destination directory for the generated file
   // and a filename of your choice
-  output       = "../src/db"
+  output       = "../src/generated/kysely"
   fileName     = "types.ts"
   // Optionally generate runtime enums to a separate file
   enumFileName = "enums.ts"

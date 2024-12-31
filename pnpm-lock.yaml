@@ -8,6 +8,7 @@ specifiers:
   '@typescript-eslint/parser': ^8.18.2
   axios: ^1.7.9
   dotenv: ^16.4.7
+  dotenv-cli: ^8.0.0
   eslint: ^9.17.0
   eslint-config-prettier: ^9.1.0
   fast-xml-parser: ^4.5.1
@@ -25,7 +26,6 @@ dependencies:
   '@prisma/client': 6.1.0_prisma@6.1.0
   '@types/pg': 8.11.10
   axios: 1.7.9
-  dotenv: 16.4.7
   fast-xml-parser: 4.5.1
   kysely: 0.27.5
   pg: 8.13.1
@@ -35,6 +35,8 @@ devDependencies:
   '@types/node': 22.10.2
   '@typescript-eslint/eslint-plugin': 8.18.2_fno4vvadaeplypfhutonvp5ake
   '@typescript-eslint/parser': 8.18.2_iv52uyctfzkctflchzytvwe3zq
+  dotenv: 16.4.7
+  dotenv-cli: 8.0.0
   eslint: 9.17.0
   eslint-config-prettier: 9.1.0_eslint@9.17.0
   prettier: 3.4.2
@@ -1164,6 +1166,21 @@ packages:
     dependencies:
       path-type: 4.0.0
 
+  /dotenv-cli/8.0.0:
+    resolution: {integrity: sha512-aLqYbK7xKOiTMIRf1lDPbI+Y+Ip/wo5k3eyp6ePysVaSqbyxjyK3dK35BTxG+rmd7djf5q2UPs4noPNH+cj0Qw==}
+    hasBin: true
+    dependencies:
+      cross-spawn: 7.0.6
+      dotenv: 16.4.7
+      dotenv-expand: 10.0.0
+      minimist: 1.2.8
+    dev: true
+
+  /dotenv-expand/10.0.0:
+    resolution: {integrity: sha512-GopVGCpVS1UKH75VKHGuQFqS1Gusej0z4FyQkPdwjil2gNIv+LNsqBlboOzpJFZKVT95GkCyWJbBSdFEFUWI2A==}
+    engines: {node: '>=12'}
+    dev: true
+
   /dotenv/16.0.3:
     resolution: {integrity: sha512-7GO6HghkA5fYG9TYnNxi14/7K9f5occMlp3zXAuSxn7CKCxt9xbNWG7yF8hTCSUchlfWSe3uLmlPfigevRItzQ==}
     engines: {node: '>=12'}
@@ -1172,7 +1189,7 @@ packages:
   /dotenv/16.4.7:
     resolution: {integrity: sha512-47qPchRCykZC03FhkYAhrvwU4xDBFIj1QPqaarj6mdM/hgUzfPHcpkHJOn3mJAufFeeAxAzeGsr5X0M4k6fLZQ==}
     engines: {node: '>=12'}
-    dev: false
+    dev: true
 
   /eastasianwidth/0.2.0:
     resolution: {integrity: sha512-I88TYZWc9XiYHRQ4/3c5rjjfgkjhLyW2luGIheGERbNQ6OY7yTybanSpDXZa8y7VUP9YmDcYa+eyq4ca7iLqWA==}
@@ -1983,6 +2000,10 @@ packages:
     engines: {node: '>=16 || 14 >=14.17'}
     dependencies:
       brace-expansion: 2.0.1
+    dev: true
+
+  /minimist/1.2.8:
+    resolution: {integrity: sha512-2yyAR8qBkN3YuheJanUpWC5U3bb5osDywNB8RzDVlDwDHbocAJveqqj1u8+SVD7jkWT4yvsHCpWqqWqAxb0zCA==}
     dev: true
 
   /minipass/7.1.2:
