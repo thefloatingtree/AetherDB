@@ -2,13 +2,18 @@ import axios from "axios";
 import { buildSteamProfileUrl } from "./constants/index.js";
 import { XMLParser } from "fast-xml-parser";
 
+class SteamProfileNotFound extends Error { }
+
 type SteamProfileResponse = {
-    profile: {
+    profile?: {
         steamID64: string; // steamId
         steamID: string; // steamName
         avatarIcon: string;
         avatarMedium: string;
         avatarFull: string;
+    };
+    response?: {
+        error: string;
     };
 };
 
@@ -26,10 +31,12 @@ export async function getSteamProfileData(steamId: string): Promise<PlayerProfil
 
     const object: SteamProfileResponse = parser.parse(response.data);
 
+    if (object.response?.error) throw new SteamProfileNotFound();
+
     return {
         steamName: object.profile?.steamID,
-        steamAvatarIcon: object.profile.avatarIcon,
-        steamAvatarMedium: object.profile.avatarMedium,
-        steamAvatarFull: object.profile.avatarFull,
+        steamAvatarIcon: object.profile?.avatarIcon,
+        steamAvatarMedium: object.profile?.avatarMedium,
+        steamAvatarFull: object.profile?.avatarFull,
     };
 }

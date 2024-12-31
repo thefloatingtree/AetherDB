@@ -1,38 +1,39 @@
 import "dotenv/config";
 
 import { sql } from "kysely";
-import { scrollAllGlobalLeaderboardPlayerSamples } from "../../../common/steam/scrollAllGlobalLeaderboardPlayerSamples.js";
+import { scrollAllGlobalLeaderboardPlayerSampleChunks, PlayerSample } from "../../../common/steam/scrollAllGlobalLeaderboardPlayerSampleChunks.js";
 import { db } from "../../../common/db/index.js";
 import { getSteamProfileData } from "../../../common/steam/getSteamProfileData.js";
+import { parallel, sift, tryit } from "radash";
 
 
-async function updateRankAndEloSamples() {
-    for await (const playerSample of scrollAllGlobalLeaderboardPlayerSamples()) {
-        const player = await db
-            .insertInto("Player")
-            .values({
-                steamId: playerSample.steamId,
-                rankSamples: [playerSample.rank],
-                rankSamplesTimestamps: [playerSample.timestamp] as any, // wtf
-                eloSamples: [playerSample.elo],
-                eloSamplesTimestamps: [playerSample.timestamp] as any, // wtf x2
-            })
-            .onConflict((oc) => oc.column("steamId").doUpdateSet(({ ref, val }) => {
-                return {
-                    rankSamples: sql`array_append(${ref("Player.rankSamples")}, ${playerSample.rank})`,
-                    rankSamplesTimestamps: sql`array_append(${ref("Player.rankSamplesTimestamps")}, ${val(playerSample.timestamp.toISOString())})`,
-                    eloSamples: sql`array_append(${ref("Player.eloSamples")}, ${playerSample.elo})`,
-                    eloSamplesTimestamps: sql`array_append(${ref("Player.eloSamplesTimestamps")}, ${val(playerSample.timestamp.toISOString())})`,
-                };
-            }))
-            .returningAll()
-            .executeTakeFirstOrThrow();
+async function processPlayerSample(playerSample: PlayerSample) {
+    const player = await db
+        .insertInto("Player")
+        .values({
+            steamId: playerSample.steamId,
+            rankSamples: [playerSample.rank],
+            rankSamplesTimestamps: [playerSample.timestamp] as any, // wtf
+            eloSamples: [playerSample.elo],
+            eloSamplesTimestamps: [playerSample.timestamp] as any, // wtf x2
+        })
+        .onConflict((oc) => oc.column("steamId").doUpdateSet(({ ref, val }) => {
+            return {
+                rankSamples: sql`array_append(${ref("Player.rankSamples")}, ${playerSample.rank})`,
+                rankSamplesTimestamps: sql`array_append(${ref("Player.rankSamplesTimestamps")}, ${val(playerSample.timestamp.toISOString())})`,
+                eloSamples: sql`array_append(${ref("Player.eloSamples")}, ${playerSample.elo})`,
+                eloSamplesTimestamps: sql`array_append(${ref("Player.eloSamplesTimestamps")}, ${val(playerSample.timestamp.toISOString())})`,
+            };
+        }))
+        .returningAll()
+        .executeTakeFirstOrThrow();
 
-        console.log(`Updated elo and rank for ${player.steamId} (${playerSample.rank})`);
+    console.log(`Updated elo and rank for ${player.steamId} (${playerSample.rank})`);
 
-        const incompletePlayerProfileData = !player.steamName || !player.steamAvatarIcon || !player.steamAvatarMedium || !player.steamAvatarFull;
-        if (incompletePlayerProfileData) {
-            const playerProfileData = await getSteamProfileData(player.steamId);
+    const incompletePlayerProfileData = !player.steamName || !player.steamAvatarIcon || !player.steamAvatarMedium || !player.steamAvatarFull;
+    if (incompletePlayerProfileData) {
+        const [_, playerProfileData] = await tryit(getSteamProfileData)("76561199800831097");
+        if (playerProfileData) {
             await db
                 .updateTable("Player")
                 .where("Player.steamId", "=", player.steamId)
@@ -50,7 +51,14 @@ async function updateRankAndEloSamples() {
 }
 
 async function main() {
-    await updateRankAndEloSamples();
+    for await (const playerSamples of scrollAllGlobalLeaderboardPlayerSampleChunks()) {
+        const [errors] = await tryit(parallel)(10, playerSamples, processPlayerSample);
+        if (errors) {
+            console.log({
+                errors: sift((errors as AggregateError).errors)
+            });
+        }
+    }
 }
 
 main()

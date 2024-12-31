@@ -19,7 +19,7 @@ type SteamLeaderboardResponse = {
     };
 };
 
-type PlayerSample = {
+export type PlayerSample = {
     steamId: string;
     timestamp: Date;
     rank: number;
@@ -28,7 +28,7 @@ type PlayerSample = {
 
 const parser = new XMLParser();
 
-export async function* scrollAllGlobalLeaderboardPlayerSamples(): AsyncGenerator<PlayerSample> {
+export async function* scrollAllGlobalLeaderboardPlayerSampleChunks(): AsyncGenerator<PlayerSample[]> {
     let nextUrl: string | undefined = rivals2SteamLeaderboardUrl;
     do {
         const fetchedAt = new Date();
@@ -40,13 +40,11 @@ export async function* scrollAllGlobalLeaderboardPlayerSamples(): AsyncGenerator
         const entryBatch = object.response?.entries?.entry ?? [];
         nextUrl = object.response?.nextRequestURL;
 
-        for (const entry of entryBatch) {
-            yield {
-                steamId: String(entry.steamid),
-                elo: entry.score,
-                rank: entry.rank,
-                timestamp: fetchedAt,
-            };
-        }
+        yield entryBatch.map((entry) => ({
+            steamId: String(entry.steamid),
+            elo: entry.score,
+            rank: entry.rank,
+            timestamp: fetchedAt,
+        }));
     } while (nextUrl);
 }

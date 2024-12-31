@@ -4,6 +4,7 @@ import { Kysely, PostgresDialect } from 'kysely';
 import { URL } from "url";
 
 const databaseCredentials = new URL(process.env["DATABASE_URL"] ?? "");
+const useSSL = process.env["PG_SSL"] === "true";
 
 const dialect = new PostgresDialect({
   pool: new pg.Pool({
@@ -13,6 +14,7 @@ const dialect = new PostgresDialect({
     password: databaseCredentials.password,
     database: databaseCredentials.pathname.replaceAll("/", ""),
     max: 10,
+    ssl: useSSL,
   })
 });
 
