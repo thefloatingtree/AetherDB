@@ -13,7 +13,6 @@ const dialect = new PostgresDialect({
     password: databaseCredentials.password,
     database: databaseCredentials.pathname.replaceAll("/", ""),
     max: 10,
-    ssl: true,
   })
 });
 
