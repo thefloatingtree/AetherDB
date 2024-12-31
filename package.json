@@ -8,7 +8,7 @@
     "cron:elo-update:dev": "tsx src/daemons/cron/index.ts",
     "cron:elo-update:dev:prod": "dotenv -e .env.prod -- tsx src/daemons/cron/index.ts",
     "cron:elo-update:start": "node ./dist/daemons/cron/elo-update/index.js",
-    "init": "pnpm install --frozen-lockfile && pnpm run build",
+    "init": "ls && pnpm install --frozen-lockfile && pnpm run build",
     "build": "rimraf ./dist && rimraf ./src/generated && prisma generate && tsc && tsc-alias",
     "lint": "eslint ./src",
     "lint:fix": "eslint ./src --fix",
