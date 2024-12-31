@@ -1,4 +1,4 @@
-import { DB } from 'generated/kysely/types.js'; // this is the Database interface we defined earlier
+import { DB } from '../../generated/kysely/types.js'; // this is the Database interface we defined earlier
 import pg from 'pg';
 import { Kysely, PostgresDialect } from 'kysely';
 import { URL } from "url";
