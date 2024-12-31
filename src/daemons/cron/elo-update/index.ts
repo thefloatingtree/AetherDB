@@ -28,7 +28,7 @@ async function updateRankAndEloSamples() {
             .returningAll()
             .executeTakeFirstOrThrow();
 
-        console.log(`Updated elo and rank for ${player.steamId}`);
+        console.log(`Updated elo and rank for ${player.steamId} (${playerSample.rank})`);
 
         const incompletePlayerProfileData = !player.steamName || !player.steamAvatarIcon || !player.steamAvatarMedium || !player.steamAvatarFull;
         if (incompletePlayerProfileData) {
