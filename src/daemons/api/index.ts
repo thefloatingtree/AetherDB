@@ -13,7 +13,7 @@ export const app = new Elysia({ adapter: node() })
 	.use(cors())
 	.use(health)
 	.use(userStats)
-	.listen(3000, ({ hostname, port }) => {
+	.listen(process.env["PORT"] || 3000, ({ port }) => {
 		console.log(
 			`🦊 Elysia is running at http://localhost:${port}`
 		);
