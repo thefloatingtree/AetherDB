@@ -8,6 +8,9 @@
     "cron:elo-update:dev": "tsx src/daemons/cron/elo-update/index.ts",
     "cron:elo-update:dev:prod": "dotenv -e .env.prod -- tsx src/daemons/cron/elo-update/index.ts",
     "cron:elo-update:start": "node ./dist/daemons/cron/elo-update/index.js",
+    "api:dev": "tsx watch src/daemons/api/index.ts",
+    "api:dev:prod": "dotenv -e .env.prod -- tsx watch src/daemons/api/index.ts",
+    "api:start": "node ./dist/daemons/api/index.js",
     "init": "pnpm install && pnpm run build",
     "build": "rimraf ./dist && rimraf ./src/generated && prisma generate && tsc && tsc-alias",
     "lint": "eslint ./src",
@@ -35,9 +38,13 @@
     "typescript": "^5.7.2"
   },
   "dependencies": {
+    "@elysiajs/cors": "^1.2.0",
+    "@elysiajs/node": "^1.2.3",
+    "@elysiajs/swagger": "^1.2.0",
     "@prisma/client": "^6.1.0",
     "@types/pg": "^8.11.10",
     "axios": "^1.7.9",
+    "elysia": "^1.2.9",
     "fast-xml-parser": "^4.5.1",
     "kysely": "^0.27.5",
     "pg": "^8.13.1",
