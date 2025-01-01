@@ -3,8 +3,8 @@ import { db } from '../../../../common/db/index.js';
 import { zip } from 'radash';
 import { sql } from 'kysely';
 
-const routes = new Elysia({ prefix: '/stats/user/:id' })
-    .post('/register', async ({ params: { id } }) => {
+const routes = new Elysia({ prefix: '/stats/user' })
+    .get('/:id', async ({ params: { id } }) => {
         const maxSamples = 100;
 
         const player = await db
